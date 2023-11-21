@@ -60,6 +60,10 @@ def main():
     load_dotenv()
     st.set_page_config(page_title="Chat with multiple PDFs", page_icon=":books:")
     st.write(css, unsafe_allow_html=True)
+    st.markdown("""
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    """, unsafe_allow_html=True)
+    st.markdown('<button class="btn btn-primary">Click me!</button>', unsafe_allow_html=True)
 
     # Initialize session state variables
     if "conversation" not in st.session_state:
