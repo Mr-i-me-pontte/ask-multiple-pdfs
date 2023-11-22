@@ -37,7 +37,7 @@ def get_conversation_chain(vectorstore):
     return ConversationalRetrievalChain(vector_store=vectorstore, memory=memory)
 
 def main():
-    file_path = '../data/input.pdf'  # Replace with actual file path
+    file_path = '../../data/input.pdf'  # Replace with actual file path
     pdf_text = load_pdf(file_path)
     if not pdf_text:
         return

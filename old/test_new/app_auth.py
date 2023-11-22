@@ -1,10 +1,6 @@
-import hashlib
-
-import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
 
-from app import load_app
 from helpers import extract_text_from_pdfs, split_text_into_chunks, create_vector_store, create_conversation_chain
 from htmlTemplates import css, bot_template, user_template
 from auth_app.auth import AuthHandler

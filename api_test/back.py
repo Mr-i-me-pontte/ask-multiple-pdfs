@@ -1,26 +1,25 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from pydantic import BaseModel
-import uvicorn
+if __name__ == '__main__':
+    import argparse
 
-app = FastAPI()
+    parser = argparse.ArgumentParser(description='PDF Chat Lambda')
+    parser.add_argument('--initialize', action='store_true', help='Initialize the conversation with PDFs')
+    parser.add_argument('--question', type=str, help='User question for the conversation')
+    parser.add_argument('--pdfs', nargs='+', type=str, help='List of PDF files to process')
 
-class Question(BaseModel):
-    question: str
+    args = parser.parse_args()
 
-@app.post("/process_pdfs")
-async def process_pdfs(pdfs: list[UploadFile] = File(...)):
-    # Code to process uploaded PDFs
-    # Extract text, create vector store, etc.
-    # You can store the processed data in a database or cache for later retrieval
-    return {"message": "PDFs processed successfully."}
+    if args.initialize:
+        # Initialize the conversation with PDFs
+        conversation_handler = ConversationHandler()
+        message = conversation_handler.initialize_conversation(args.pdfs)
+        print(message)
 
-@app.post("/get_response")
-async def get_response(question: Question):
-    # Code to handle the conversation logic
-    # Retrieve the relevant information based on the question
-    # and the previously processed PDFs
-    answer = "This is a placeholder response."  # Replace with actual logic
-    return {"answer": answer}
+    elif args.question:
+        # Handle user question
+        conversation_handler = ConversationHandler()
+        chat_history = conversation_handler.handle_user_input(args.question)
+        for message in chat_history:
+            print(message)
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    else:
+        print("Invalid command. Use '--initialize' to process PDFs or '--question' to ask a question.")

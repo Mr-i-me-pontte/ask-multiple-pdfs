@@ -3,6 +3,8 @@ import streamlit as st
 
 from htmlTemplates import user_template, bot_template
 
+
+# %% ChatHandler:
 class ChatHandler:
     def __init__(self):
         # Initialize session state variables if they don't exist

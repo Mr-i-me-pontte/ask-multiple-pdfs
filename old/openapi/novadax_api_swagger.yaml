@@ -1,0 +1,116 @@
+
+openapi: 3.0.0
+info:
+  title: NovaDAX API
+  version: 1.0.0
+  description: NovaDAX API for accessing market data, trading, order history, and account management.
+servers:
+  - url: https://api.novadax.com
+    description: Main server (production)
+
+paths:
+  /crypto/chain/{code}:
+    get:
+      summary: Get Chain Details
+      operationId: getChainDetails
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/wallet/withdraw/coin:
+    post:
+      summary: Withdraw Coin
+      operationId: withdrawCoin
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/orders/get:
+    get:
+      summary: Get Order Details
+      operationId: getOrderDetails
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/orders/list:
+    get:
+      summary: List Orders
+      operationId: listOrders
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/wallet/query/deposit-withdraw:
+    get:
+      summary: Query Deposit Withdraw
+      operationId: queryDepositWithdraw
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/orders/fills:
+    get:
+      summary: Query Historical Trade Details
+      operationId: queryHistoricalTradeDetails
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/common/symbol:
+    get:
+      summary: Get Configuration for a Single Trading Pair
+      operationId: getSingleTradingPairConfig
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/account/subs:
+    get:
+      summary: Get List of Sub-Accounts
+      operationId: getListOfSubAccounts
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/account/subs/balance:
+    get:
+      summary: Check Sub-Account Balances
+      operationId: checkSubAccountBalances
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/account/subs/transfer/record:
+    get:
+      summary: Query Sub-Account Transfer Records
+      operationId: querySubAccountTransferRecords
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/account/subs/transfer:
+    post:
+      summary: Initiate Sub-Account Transfers
+      operationId: initiateSubAccountTransfers
+      responses:
+        '200':
+          description: Successful response
+
+  /v1/account/withdraw/coin:
+    post:
+      summary: Withdraw Funds
+      operationId: withdrawFunds
+      responses:
+        '200':
+          description: Successful response
+
+components:
+  schemas:
+    # Define response schemas here
