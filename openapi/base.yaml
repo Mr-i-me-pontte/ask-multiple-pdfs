@@ -1,0 +1,384 @@
+openapi: 3.0.0
+info:
+  title: NovaDAX API
+  version: 1.0.0
+  description: NovaDAX API for accessing market data, trading, order history, and account management.
+
+servers:
+  - url: 'https://api.novadax.com'
+    description: NovaDAX API server
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-NovaDAX-Access-Key
+  schemas:
+    RecentTradeList:
+      type: array
+      items:
+        $ref: '#/components/schemas/RecentTrade'
+
+    KlineDataList:
+      type: array
+      items:
+        $ref: '#/components/schemas/KlineData'
+
+    TradingSymbolResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        data:
+          $ref: '#/components/schemas/TradingSymbol'
+        message:
+          type: string
+
+    TradingSymbol:
+      type: object
+      properties:
+        symbol:
+          type: string
+        baseCurrency:
+          type: string
+        quoteCurrency:
+          type: string
+        amountPrecision:
+          type: integer
+        pricePrecision:
+          type: integer
+        valuePrecision:
+          type: integer
+        minOrderAmount:
+          type: string
+        minOrderValue:
+          type: string
+
+    TickerInfo:
+      type: object
+      properties:
+        symbol:
+          type: string
+        lastPrice:
+          type: string
+        bid:
+          type: string
+        ask:
+          type: string
+        open24h:
+          type: string
+        high24h:
+          type: string
+        low24h:
+          type: string
+        baseVolume24h:
+          type: string
+        quoteVolume24h:
+          type: string
+        timestamp:
+          type: number
+
+    MarketDepth:
+      type: object
+      properties:
+        asks:
+          type: array
+          items:
+            type: array
+            items:
+              - type: string # Price
+              - type: string # Amount
+        bids:
+          type: array
+          items:
+            type: array
+            items:
+              - type: string # Price
+              - type: string # Amount
+        timestamp:
+          type: number
+
+    RecentTrade:
+      type: object
+      properties:
+        price:
+          type: string
+        amount:
+          type: string
+        side:
+          type: string
+        timestamp:
+          type: number
+
+    KlineData:
+      type: object
+      properties:
+        unit:
+          type: string
+        amount:
+          type: string
+        count:
+          type: string
+        openPrice:
+          type: string
+        closePrice:
+          type: string
+        highPrice:
+          type: string
+        lowPrice:
+          type: string
+        symbol:
+          type: string
+        score:
+          type: string
+        vol:
+          type: string
+
+
+security:
+  - ApiKeyAuth: [ ]
+
+paths:
+  /v1/common/symbol:
+    get:
+      summary: Get One Supported Trading Symbol
+      operationId: getOneSupportedTradingSymbol
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradingSymbolResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /v1/common/symbols:
+    get:
+      summary: Get All Supported Trading Symbols
+      operationId: getAllSupportedTradingSymbols
+      security:
+        - ApiKeyAuth: [ ]
+      parameters: [ ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TradingSymbol'
+                  message:
+                    type: string
+
+  /v1/common/timestamp:
+    get:
+      summary: Get Current System Time
+      operationId: getCurrentSystemTime
+      security:
+        - ApiKeyAuth: [ ]
+      parameters: [ ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  data:
+                    type: number
+                  message:
+                    type: string
+
+  /v1/market/tickers:
+    get:
+      summary: Get Latest Tickers for All Trading Pairs
+      operationId: getLatestTickersAllPairs
+      security:
+        - ApiKeyAuth: [ ]
+      parameters: [ ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TickerInfo'
+                  message:
+                    type: string
+
+  /v1/market/ticker:
+    get:
+      summary: Get Latest Ticker for Specific Pair
+      operationId: getLatestTickerSpecificPair
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TickerInfo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /v1/market/depth:
+    get:
+      summary: Get Market Depth (Order Book) for Specific Pair
+      operationId: getMarketDepth
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20 # You can adjust the default limit
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketDepth'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /v1/market/trades:
+    get:
+      summary: Get Recent Trades for Specific Pair
+      operationId: getRecentTrades
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20 # You can adjust the default limit
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecentTradeList'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /v1/market/kline:
+    get:
+      summary: Get Kline/Candlestick Data for Specific Pair
+      operationId: getKlineData
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: interval
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - '1m'
+              - '5m'
+              - '15m'
+              - '30m'
+              - '1h'
+              - '6h'
+              - '1d'
+              - '1w'
+              - '1M'
+        - name: startTime
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: endTime
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 20 # You can adjust the default limit
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KlineDataList'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  # ... Additional endpoints for Market Depth, Recent Trades, Kline Data ...
+
+# Define any additional components, security definitions, or other configurations as needed.

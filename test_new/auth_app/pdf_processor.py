@@ -1,3 +1,11 @@
+# pdf_processor.py
+
+class PDFProcessor:
+    # Add PDF processing methods here
+    pass
+
+
+
 from PyPDF2 import PdfReader
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI

@@ -1,0 +1,143 @@
+openapi: 3.0.0
+info:
+  title: NovaDAX API
+  version: 1.0.0
+  description: NovaDAX API for accessing market data, trading, order history, and account management.
+
+servers:
+  - url: 'https://api.novadax.com'
+    description: NovaDAX API server
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-NovaDAX-Access-Key
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /v1/common/symbol:
+    get:
+      summary: Get One Supported Trading Symbol
+      operationId: getOneSupportedTradingSymbol
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradingSymbolResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /v1/common/symbols:
+    get:
+      summary: Get All Supported Trading Symbols
+      operationId: getAllSupportedTradingSymbols
+      security:
+        - ApiKeyAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TradingSymbol'
+                  message:
+                    type: string
+
+  /v1/common/timestamp:
+    get:
+      summary: Get Current System Time
+      operationId: getCurrentSystemTime
+      security:
+        - ApiKeyAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  data:
+                    type: number
+                  message:
+                    type: string
+
+  /v1/market/tickers:
+    get:
+      summary: Get Latest Tickers for All Trading Pairs
+      operationId: getLatestTickersAllPairs
+      security:
+        - ApiKeyAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TickerInfo'
+                  message:
+                    type: string
+
+  /v1/market/ticker:
+    get:
+      summary: Get Latest Ticker for Specific Pair
+      operationId: getLatestTickerSpecificPair
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: symbol
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TickerInfo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  # ... Additional endpoints for Market Depth, Recent Trades, Kline Data ...
+
+
+# Define any additional components, security definitions, or other configurations as needed.
