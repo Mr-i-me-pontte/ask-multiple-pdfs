@@ -56,7 +56,7 @@ def create_conversation_chain(vector_store):
     return conversation_chain
 
 
-def main_app():
+def main():
     load_dotenv()
     st.set_page_config(page_title="Chat with multiple PDFs", page_icon=":books:")
     st.write(css, unsafe_allow_html=True)

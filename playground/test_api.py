@@ -1,10 +1,13 @@
+# %%
 import requests
 
-API_URL = "http://localhost:8000/hello"  # Replace with the actual URL of your API
+API_URL = "http://localhost:8000/submit"  # Replace with the actual URL of your API
 
 def test_hello_api():
     try:
-        response = requests.get(API_URL)
+        response = requests.post(API_URL)
+        print(response)
+
         if response.status_code == 200:
             data = response.json()
             print("API Response:")
