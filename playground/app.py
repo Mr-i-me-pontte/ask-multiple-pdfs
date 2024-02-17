@@ -15,14 +15,6 @@ CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
 
 
-def extract_text_from_pdfs(pdf_docs):
-    """Extracts and concatenates text from PDF documents."""
-    text = ""
-    for pdf in pdf_docs:
-        pdf_reader = PdfReader(pdf)
-        for page in pdf_reader.pages:
-            text += page.extract_text() or ''
-    return text
 
 
 def split_text_into_chunks(text):
@@ -102,6 +94,14 @@ def main_app():
                     st.success("PDFs processed successfully.")
                 except Exception as e:
                     st.error(f"An error occurred: {str(e)}")
+def extract_text_from_pdfs(pdf_docs):
+    """Extracts and concatenates text from PDF documents."""
+    text = ""
+    for pdf in pdf_docs:
+        pdf_reader = PdfReader(pdf)
+        for page in pdf_reader.pages:
+            text += page.extract_text() or ''
+    return text
 
 def extract_and_process_pdfs():
     pdf_docs = st.file_uploader("Upload your PDFs here and click on 'Process'", accept_multiple_files=True)

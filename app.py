@@ -119,4 +119,4 @@ def handle_user_input(user_question):
 
 
 if __name__ == '__main__':
-    main()
+    main_app()

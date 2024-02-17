@@ -13,24 +13,23 @@ pp = PrettyPrinter(indent=4).pprint
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
+def process_chat(text_chunks, user_question):
+    try:
+        langchain_handler = LangchainHandler(text_chunks)
+        vector_store = langchain_handler.create_vector_store()
+        conversation_chain = langchain_handler.create_conversation_chain(vector_store)
+        response = conversation_chain({'question': user_question})
+        return response['chat_history']
+    except Exception as e:
+        logger.error(f"Chat processing error: {e}")
+        raise
 def process_pdf_and_chat_handler(event, context):
     load_dotenv()
 
-    user_question = event.get("user_question", "list transactions")
-    s3_object_key = event.get("s3_object_key")
-
-    if not s3_object_key:
-        logger.error("s3_object_key not provided in the event")
-        return {
-            "statusCode": 400,
-            "body": json.dumps({"error": "s3_object_key not provided in the event"})
-        }
+    user_question = event.get("user_question", "hello")
 
     try:
         s3_helper = S3Helper()
-        pdf_bytes = s3_helper.download_file(s3_object_key)
-        pdf_text_chunks = process_pdf(pdf_bytes)
         chat_response = process_chat(pdf_text_chunks, user_question)
         logger.info(f"Chat response: {chat_response}")
         response_messages = []
